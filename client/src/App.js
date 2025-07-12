@@ -1,28 +1,21 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import React from "react";
 import ProductList from "./components/ProductList";
-import Cart from "./components/Cart";
-import AdminPanel from "./components/AdminPanel";
-import Login from "./components/Login";
-import PrivateRoute from "./components/PrivateRoute";
-import { useState } from "react";
+import OrderForm from "./components/OrderForm";
 
-function App() {
-  const [selectedProduct, setSelectedProduct] = useState(null);
+export default function App() {
+    return (
+        <div style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}>
+            <header style={{ backgroundColor: "#0a8b46", color: "white", padding: "20px" }}>
+                <h1>KMF VITEZ - Fan Shop</h1>
+                <p>Get your favorite fan gear!</p>
+            </header>
 
-  return (
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<ProductList onOrder={setSelectedProduct} />} />
-          <Route path="/checkout" element={<Cart selectedProduct={selectedProduct} />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/admin" element={
-            <PrivateRoute>
-              <AdminPanel />
-            </PrivateRoute>
-          }/>
-        </Routes>
-      </BrowserRouter>
-  );
+            <ProductList />
+
+            <section style={{ marginTop: "40px" }}>
+                <h2>Place an Order</h2>
+                <OrderForm />
+            </section>
+        </div>
+    );
 }
-
-export default App;

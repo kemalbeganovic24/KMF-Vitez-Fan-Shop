@@ -46,7 +46,7 @@ app.post("/api/orders", async (req, res) => {
 // login
 app.post("/api/login", (req, res) => {
     const { password } = req.body;
-    if (password === "process.env.ADMIN_PASSWORD") {
+    if (password === process.env.ADMIN_PASSWORD) {
         const token = jwt.sign({ role: "admin" }, SECRET_KEY, { expiresIn: "2h" });
         res.json({ token });
     } else {

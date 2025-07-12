@@ -1,28 +1,22 @@
 import React, { useEffect, useState } from "react";
-import axios from "axios";
 
-function ProductList({ onOrder }) {
+export default function ProductList() {
     const [products, setProducts] = useState([]);
 
     useEffect(() => {
-        axios.get("http://localhost:5000/api/products")
-            .then(res => setProducts(res.data));
+        fetch(`${process.env.REACT_APP_API_URL}/api/products`)
+            .then(res => res.json())
+            .then(data => setProducts(data));
     }, []);
 
     return (
-        <div>
-            <h2>Fan Shop</h2>
-            <div style={{ display: "flex", gap: "20px" }}>
-                {products.map(p => (
-                    <div key={p.id} style={{ border: "1px solid #ccc", padding: 10 }}>
-                        <h3>{p.name}</h3>
-                        <p>${p.price}</p>
-                        <button onClick={() => onOrder(p.id)}>Naruči</button>
-                    </div>
-                ))}
-            </div>
+        <div style={{ display: "flex", justifyContent: "center", gap: "40px", marginTop: "20px" }}>
+            {products.map(product => (
+                <div key={product.id}>
+                    <h3>{product.name}</h3>
+                    <p>${product.price}</p>
+                </div>
+            ))}
         </div>
     );
 }
-
-export default ProductList;
