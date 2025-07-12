@@ -54,6 +54,10 @@ app.post("/api/login", (req, res) => {
     }
 });
 
+app.get("/", (req, res) => {
+    res.send("🚀 Fan Shop backend je aktivan!");
+});
+
 // get orders
 app.get("/api/admin/orders", async (req, res) => {
     const auth = req.headers.authorization;
