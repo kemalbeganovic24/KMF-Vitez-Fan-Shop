@@ -4,11 +4,13 @@ export default function OrderForm() {
     const [products, setProducts] = useState([]);
     const [form, setForm] = useState({ name: "", email: "", productId: "" });
     const [success, setSuccess] = useState(false);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
         fetch(`${process.env.REACT_APP_API_URL}/api/products`)
             .then(res => res.json())
-            .then(data => setProducts(data));
+            .then(data => setProducts(data))
+            .catch(() => setProducts([]));
     }, []);
 
     const handleChange = e => {
@@ -17,19 +19,28 @@ export default function OrderForm() {
 
     const handleSubmit = async e => {
         e.preventDefault();
-        const res = await fetch(`${process.env.REACT_APP_API_URL}/api/orders`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(form)
-        });
-        if (res.ok) {
-            setSuccess(true);
-            setForm({ name: "", email: "", productId: "" });
+        setError(null);
+        try {
+            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/orders`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ ...form, productId: Number(form.productId) }),
+            });
+            if (!res.ok) {
+                const data = await res.json();
+                setError(data.error || "Greška pri slanju porudžbine");
+            } else {
+                setSuccess(true);
+                setForm({ name: "", email: "", productId: "" });
+                setTimeout(() => setSuccess(false), 3000);
+            }
+        } catch {
+            setError("Greška u mreži");
         }
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ display: "inline-block", textAlign: "left", marginTop: "10px" }}>
+        <form onSubmit={handleSubmit} style={{ textAlign: "left", marginTop: "10px" }}>
             <label>Name:<br />
                 <input type="text" name="name" value={form.name} onChange={handleChange} required />
             </label><br /><br />
@@ -46,6 +57,7 @@ export default function OrderForm() {
             </label><br /><br />
             <button type="submit">Submit</button>
             {success && <p style={{ color: "green" }}>Order sent!</p>}
+            {error && <p style={{ color: "red" }}>{error}</p>}
         </form>
     );
 }
