@@ -57,11 +57,19 @@ app.get("/api/products", (req, res) => {
 // Ruta za kreiranje narudžbe
 app.post("/api/orders", async (req, res) => {
     const { name, email, productId } = req.body;
+
+    console.log("📦 Nova narudžba:", { name, email, productId });
+
+    // Validacija
+    if (!name || !email || !productId || typeof productId !== 'number' || isNaN(productId)) {
+        return res.status(400).json({ error: "Neispravan unos. Sva polja su obavezna." });
+    }
+
     try {
         await Order.create({ name, email, productId });
         res.json({ success: true });
     } catch (error) {
-        console.error("Greška pri kreiranju narudžbe:", error);
+        console.error("❌ Greška pri kreiranju narudžbe:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
