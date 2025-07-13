@@ -22,24 +22,24 @@ export default function OrderForm() {
     const handleSubmit = async e => {
         e.preventDefault();
         setError(null);
+
+        const apiUrl = "https://kmf-vitez-fan-shop.onrender.com";  // <-- OVDE
+
         try {
-            console.log("Šaljem narudžbu:", { ...form, productId: Number(form.productId) });
-            const res = await fetch(`${process.env.REACT_APP_API_URL}/api/orders`, {
+            const res = await fetch(`${apiUrl}/api/orders`, {      // <-- i OVDE koristiš apiUrl
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ ...form, productId: Number(form.productId) }),
             });
             if (!res.ok) {
                 const data = await res.json();
-                console.error("Greška sa servera:", data);
                 setError(data.error || "Greška pri slanju porudžbine");
             } else {
                 setSuccess(true);
                 setForm({ name: "", email: "", productId: "" });
                 setTimeout(() => setSuccess(false), 3000);
             }
-        } catch (err) {
-            console.error("Greška u mreži:", err);
+        } catch {
             setError("Greška u mreži");
         }
     };
