@@ -33,15 +33,17 @@ const SECRET_KEY = process.env.SECRET_KEY || "supersecret123";
 const Order = mongoose.model("Order", new mongoose.Schema({
     name: String,
     email: String,
+    phone:String,
     productId: Number,
+    message:String,
     createdAt: { type: Date, default: Date.now }
 }));
 
 // Hardkodirani proizvodi
 const products = [
     { id: 1, name: "Majica", price: 20 },
-    { id: 2, name: "Kapa", price: 15 },
-    { id: 3, name: "Duks", price: 40 },
+    { id: 2, name: "Šal", price: 15 },
+    { id: 3, name: "Dukserica", price: 40 },
 ];
 
 // Root ruta - samo potvrda da server radi
@@ -56,12 +58,12 @@ app.get("/api/products", (req, res) => {
 
 // Ruta za kreiranje narudžbe
 app.post("/api/orders", async (req, res) => {
-    const { name, email, productId } = req.body;
+    const { name, email,phone, productId, message } = req.body;
 
     console.log("⬅️ Pristigla narudžba:", req.body);
 
     const productIdNum = Number(productId);
-    if (!name || !email || !productId || isNaN(productIdNum)) {
+    if (!name || !email || !phone || !productId || isNaN(productIdNum)) {
         console.log("⚠️ Neispravan unos!");
         return res.status(400).json({ error: "Neispravan unos. Sva polja su obavezna i productId mora biti broj." });
     }
@@ -74,7 +76,7 @@ app.post("/api/orders", async (req, res) => {
 
     try {
         console.log("📝 Snimam narudžbu u bazu...");
-        await Order.create({ name, email, productId: productIdNum });
+        await Order.create({ name, email,phone, productId: productIdNum, message });
         console.log("✅ Uspješno snimljeno!");
         res.json({ success: true });
     } catch (error) {

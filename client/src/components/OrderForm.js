@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 
 export default function OrderForm() {
     const [products, setProducts] = useState([]);
-    const [form, setForm] = useState({ name: "", email: "", productId: "" });
+    const [form, setForm] = useState({ name: "", email: "", productId: "",phone:"",message:"" });
     const [success, setSuccess] = useState(false);
     const [error, setError] = useState(null);
 
@@ -36,7 +36,7 @@ export default function OrderForm() {
                 setError(data.error || "Greška pri slanju porudžbine");
             } else {
                 setSuccess(true);
-                setForm({ name: "", email: "", productId: "" });
+                setForm({ name: "", email: "", productId: "",phone:"",message: "" });
                 setTimeout(() => setSuccess(false), 3000);
             }
         } catch {
@@ -45,24 +45,35 @@ export default function OrderForm() {
     };
 
     return (
-        <form onSubmit={handleSubmit} style={{ textAlign: "left", marginTop: "10px" }}>
-            <label>Name:<br />
-                <input type="text" name="name" value={form.name} onChange={handleChange} required />
-            </label><br /><br />
-            <label>Email:<br />
-                <input type="email" name="email" value={form.email} onChange={handleChange} required />
-            </label><br /><br />
-            <label>Product:<br />
-                <select name="productId" value={form.productId} onChange={handleChange} required>
-                    <option value="">-- Select --</option>
-                    {products.map(p => (
-                        <option key={p.id} value={p.id}>{p.name}</option>
-                    ))}
-                </select>
-            </label><br /><br />
-            <button type="submit">Submit</button>
-            {success && <p style={{ color: "green" }}>Order sent!</p>}
-            {error && <p style={{ color: "red" }}>{error}</p>}
-        </form>
+        <div className="form-container">
+            {success && <div className="alert success">Uspješno ste naručili!</div>}
+            {error && <div className="alert error">{error}</div>}
+            <form onSubmit={handleSubmit} style={{ textAlign: "left", marginTop: "10px" }}>
+                <label>Ime i prezime:<br />
+                    <input type="text" name="name" value={form.name}
+                           onChange={handleChange} required />
+                </label><br /><br />
+                <label>Email:<br />
+                    <input type="email" name="email" value={form.email} onChange={handleChange} required />
+                </label><br /><br />
+                <label>Broj telefona:<br />
+                    <input type="tel" name="phone" value={form.phone}   onChange={handleChange} placeholder="+387 61 123 456" required />
+                </label><br /><br />
+                <label>Poruka/Napomena<br />
+                    <textarea name="message" value={form.message} onChange={handleChange}  placeholder="Unesite poruku ili napomenu" required />
+                </label><br /><br />
+                <label>Artikal:<br />
+                    <select name="productId" value={form.productId} onChange={handleChange} className="custom-select" required>
+                        <option value="">-- Izaberi --</option>
+                        {products.map(p => (
+                            <option key={p.id} value={p.id}>{p.name}</option>
+                        ))}
+                    </select>
+                </label><br /><br />
+                <button type="submit">Pošalji</button>
+
+            </form>
+        </div>
+
     );
 }
