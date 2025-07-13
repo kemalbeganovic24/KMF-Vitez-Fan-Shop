@@ -58,25 +58,27 @@ app.get("/api/products", (req, res) => {
 app.post("/api/orders", async (req, res) => {
     const { name, email, productId } = req.body;
 
-    const productIdNum = Number(productId);
+    console.log("⬅️ Pristigla narudžba:", req.body);
 
-    // Validacija obaveznih polja i da je productId broj
+    const productIdNum = Number(productId);
     if (!name || !email || !productId || isNaN(productIdNum)) {
+        console.log("⚠️ Neispravan unos!");
         return res.status(400).json({ error: "Neispravan unos. Sva polja su obavezna i productId mora biti broj." });
     }
 
-    // Ovdje ide provjera da li proizvod postoji u listi proizvoda
     const product = products.find(p => p.id === productIdNum);
     if (!product) {
+        console.log("❌ Nepostojeći proizvod:", productIdNum);
         return res.status(400).json({ error: "Nepostojeći proizvod." });
     }
 
     try {
-        // Kreiranje narudžbe u bazi
+        console.log("📝 Snimam narudžbu u bazu...");
         await Order.create({ name, email, productId: productIdNum });
+        console.log("✅ Uspješno snimljeno!");
         res.json({ success: true });
     } catch (error) {
-        console.error("❌ Greška pri kreiranju narudžbe:", error);
+        console.error("❌ Greška pri snimanju:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });
