@@ -12,8 +12,11 @@ const app = express();
 app.use(cors({
     origin: [
         "http://localhost:3000",
-        "https://kmf-vitez-fan-shop.onrender.com"
-    ]
+        "https://kmf-vitez-fan-shop.onrender.com",
+        "https://green-army-vitez-fan-shop.onrender.com" // ← ovo dodaj!
+    ],
+    methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
 app.use(express.json());
