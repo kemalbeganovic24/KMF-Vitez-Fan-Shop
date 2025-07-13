@@ -102,8 +102,18 @@ app.get("/api/admin/orders", async (req, res) => {
     const token = auth.split(" ")[1];
     try {
         jwt.verify(token, SECRET_KEY);
+
         const orders = await Order.find();
-        res.json(orders);
+
+        const ordersWithProductNames = orders.map(order => {
+            const product = products.find(p => p.id === order.productId);
+            return {
+                ...order._doc,
+                productName: product ? product.name : "Nepoznat proizvod"
+            };
+        });
+
+        res.json(ordersWithProductNames);
     } catch {
         res.status(403).json({ error: "Invalid token" });
     }
