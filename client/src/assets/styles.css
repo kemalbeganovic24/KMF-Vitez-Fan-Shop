@@ -5,39 +5,50 @@ body{
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)),
-    url("../slike/gav1.jpg") center center/cover no-repeat;
+    width: 100vw;                       /* Puna širina ekrana */
+    height: 100vh;                      /* Puna visina ekrana */
+    background-image: url("../slike/gav0 - kopija.jpg");
+    background-size: cover;             /* Slika popunjava ekran */
+    background-position: center;
+    background-repeat: no-repeat;
+
     display: flex;
-    align-items: center;
+    flex-direction: column;
     justify-content: center;
+    align-items: center;
+
+    color: white;
+    font-family: 'Arial', sans-serif;
+    font-size: 28px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    text-align: center;
+    padding: 20px;
     z-index: 9999;
-    animation: fadeOut 1s ease forwards;
-    animation-delay: 2s;
 }
 
 .loading-text {
-    color: white;
-    font-size: 2.5rem;
-    font-weight: bold;
-    font-family: 'Arial Black', sans-serif;
-    opacity: 1;
-    animation: textFadeOut 1s ease forwards;
-    animation-delay: 2s;
+    font-size: 50px;
+    margin-bottom: 30px;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Da tekst "iskoči" */
 }
 
-@keyframes fadeOut {
-    to {
-        opacity: 0;
-        visibility: hidden;
+.loading-image img {
+    width: 300px;        /* Veličina loga */
+    max-width: 80vw;
+    height: auto;
+    animation: pulse 2s infinite ease-in-out;
+}
+
+/* Animacija pulsiranja loga */
+@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        opacity: 1;
     }
-}
-
-@keyframes textFadeOut {
-    to {
-        opacity: 0;
-        transform: scale(0.95);
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
     }
 }
 
@@ -243,12 +254,14 @@ footer{
         padding: 40px;
     }
     .loading-screen {
-        position: fixed;       /* fiksiran preko cele strane */
+        position: fixed;
         top: 0;
         left: 0;
-        width: 60vh;
-        height: 150vh;
-        background-image: url("../slike/gav0 - kopija.jpg") ; /* zelena pozadina po tvom brendu */
+        width: 100vw;              /* Puna širina ekrana */
+        height: 100vh;             /* Puna visina ekrana */
+        background-image: url("../slike/gav0 - kopija.jpg");
+        background-size: cover;    /* Da popuni pozadinu */
+        background-position: center;
         display: flex;
         flex-direction: column;
         justify-content: center;
@@ -256,23 +269,26 @@ footer{
         color: white;
         font-family: Arial, sans-serif;
         font-size: 24px;
-        z-index: 9999;        /* da bude iznad svega */
+        z-index: 9999;
+        text-align: center;
+        padding: 20px;
+        box-sizing: border-box;
     }
 
     .loading-text {
         margin-bottom: 20px;
         font-weight: bold;
-        text-align: center;
         letter-spacing: 2px;
+        font-size: 25px;
     }
 
+
     .loading-image img {
-        width: 150px;
+        width: 260px;
         height: auto;
         animation: pulse 2s infinite ease-in-out;
     }
 
-    /* Animacija pulsiranja logo slike */
     @keyframes pulse {
         0%, 100% {
             transform: scale(1);

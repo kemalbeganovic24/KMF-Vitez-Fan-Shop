@@ -24,7 +24,10 @@ export default function App() {
                 <br/>
                 <div className="loading-image">
                     <img src={logo} alt="Logo" />
+                    <br/>
                 </div>
+                <br/>
+
             </div>
         );
     }
