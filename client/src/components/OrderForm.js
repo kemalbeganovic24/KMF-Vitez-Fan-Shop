@@ -37,7 +37,7 @@ export default function OrderForm() {
             } else {
                 setSuccess(true);
                 setForm({ name: "", email: "", productId: "",phone:"",message: "" });
-                setTimeout(() => setSuccess(false), 3000);
+                setTimeout(() => setSuccess(false), 12000);
             }
         } catch {
             setError("Greška u mreži");
