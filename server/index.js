@@ -58,15 +58,22 @@ app.get("/api/products", (req, res) => {
 app.post("/api/orders", async (req, res) => {
     const { name, email, productId } = req.body;
 
-    console.log("📦 Nova narudžba:", { name, email, productId });
+    const productIdNum = Number(productId);
 
-    // Validacija
-    if (!name || !email || !productId || typeof productId !== 'number' || isNaN(productId)) {
-        return res.status(400).json({ error: "Neispravan unos. Sva polja su obavezna." });
+    // Validacija obaveznih polja i da je productId broj
+    if (!name || !email || !productId || isNaN(productIdNum)) {
+        return res.status(400).json({ error: "Neispravan unos. Sva polja su obavezna i productId mora biti broj." });
+    }
+
+    // Ovdje ide provjera da li proizvod postoji u listi proizvoda
+    const product = products.find(p => p.id === productIdNum);
+    if (!product) {
+        return res.status(400).json({ error: "Nepostojeći proizvod." });
     }
 
     try {
-        await Order.create({ name, email, productId });
+        // Kreiranje narudžbe u bazi
+        await Order.create({ name, email, productId: productIdNum });
         res.json({ success: true });
     } catch (error) {
         console.error("❌ Greška pri kreiranju narudžbe:", error);

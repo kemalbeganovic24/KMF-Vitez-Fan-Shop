@@ -17,10 +17,13 @@ export default function OrderForm() {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
+
+
     const handleSubmit = async e => {
         e.preventDefault();
         setError(null);
         try {
+            console.log("Šaljem narudžbu:", { ...form, productId: Number(form.productId) });
             const res = await fetch(`${process.env.REACT_APP_API_URL}/api/orders`, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
@@ -28,13 +31,15 @@ export default function OrderForm() {
             });
             if (!res.ok) {
                 const data = await res.json();
+                console.error("Greška sa servera:", data);
                 setError(data.error || "Greška pri slanju porudžbine");
             } else {
                 setSuccess(true);
                 setForm({ name: "", email: "", productId: "" });
                 setTimeout(() => setSuccess(false), 3000);
             }
-        } catch {
+        } catch (err) {
+            console.error("Greška u mreži:", err);
             setError("Greška u mreži");
         }
     };
