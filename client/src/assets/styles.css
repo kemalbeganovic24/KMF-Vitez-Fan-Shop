@@ -5,10 +5,10 @@ body{
     position: fixed;
     top: 0;
     left: 0;
-    width: 100vw;                       /* Puna širina ekrana */
-    height: 100vh;                      /* Puna visina ekrana */
+    width: 100vw;
+    height: 100vh;
     background-image: url("../slike/gav0 - kopija.jpg");
-    background-size: cover;             /* Slika popunjava ekran */
+    background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
 
@@ -30,11 +30,11 @@ body{
 .loading-text {
     font-size: 50px;
     margin-bottom: 30px;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6); /* Da tekst "iskoči" */
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);
 }
 
 .loading-image img {
-    width: 300px;        /* Veličina loga */
+    width: 300px;
     max-width: 80vw;
     height: auto;
     animation: pulse 2s infinite ease-in-out;

@@ -2,7 +2,7 @@ import React from "react";
 import majica from "../slike/majica.png";
 import shal from "../slike/shal.png";
 import duks from "../slike/duks.png";
-import slika from "../slike/gav8.jpg";
+import slika from "../slike/pozadina2.jpg";
 
 export default function ProductList() {
     const products = [
@@ -38,7 +38,7 @@ export default function ProductList() {
                     width: "100%",
                     height: "100%",
                     objectFit: "cover",
-                    opacity: 0.09,
+                    opacity: 0.2,
                     zIndex: 0,
                     pointerEvents: "none",
                 }}
