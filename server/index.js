@@ -1,128 +1,70 @@
 import express from "express";
-import cors from "cors";
 import mongoose from "mongoose";
-import jwt from "jsonwebtoken";
+import cors from "cors";
 import dotenv from "dotenv";
 
 dotenv.config();
 
 const app = express();
+const PORT = process.env.PORT || 5000;
 
-// Dozvoli zahteve sa localhost i produkcijskog frontenda
-app.use(cors({
-    origin: [
-        "http://localhost:3000",
-        "https://kmf-vitez-fan-shop.onrender.com",
-        "https://green-army-vitez-fan-shop.onrender.com" // ← ovo dodaj!
-    ],
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization"]
-}));
-
+app.use(cors());
 app.use(express.json());
 
-// Konektuj se na MongoDB Atlas
-mongoose.connect(process.env.MONGO_URL)
-    .then(() => console.log("✅ Spojeno na MongoDB Atlas"))
-    .catch(err => console.error("❌ Greška pri spajanju:", err));
-
-// Secret key za JWT (poželjno iz env)
-const SECRET_KEY = process.env.SECRET_KEY || "supersecret123";
-
-// Model za narudžbe
-const Order = mongoose.model("Order", new mongoose.Schema({
+// === Mongoose model direktno ovdje ===
+const orderSchema = new mongoose.Schema({
     name: String,
     email: String,
-    phone:String,
-    productId: Number,
-    message:String,
-    createdAt: { type: Date, default: Date.now }
-}));
+    phone: String,
+    city: String,
+    message: String,
+    cart: [
+        {
+            productId: Number,
+            name: String,
+            quantity: Number,
+            price: Number,
+        },
+    ],
+    totalPrice: Number,
+}, { timestamps: true });
 
-// Hardkodirani proizvodi
-const products = [
-    { id: 1, name: "Majica", price: 20 },
-    { id: 2, name: "Šal", price: 15 },
-    { id: 3, name: "Dukserica", price: 40 },
-];
+const Order = mongoose.model("Order", orderSchema);
 
-// Root ruta - samo potvrda da server radi
-app.get("/", (req, res) => {
-    res.send("🚀 Fan Shop backend je aktivan!");
-});
-
-// Ruta za vraćanje proizvoda
-app.get("/api/products", (req, res) => {
-    res.json(products);
-});
-
-// Ruta za kreiranje narudžbe
+// === RUTA bez foldera ===
 app.post("/api/orders", async (req, res) => {
-    const { name, email,phone, productId, message } = req.body;
-
-    console.log("⬅️ Pristigla narudžba:", req.body);
-
-    const productIdNum = Number(productId);
-    if (!name || !email || !phone || !productId || isNaN(productIdNum)) {
-        console.log("⚠️ Neispravan unos!");
-        return res.status(400).json({ error: "Neispravan unos. Sva polja su obavezna i productId mora biti broj." });
-    }
-
-    const product = products.find(p => p.id === productIdNum);
-    if (!product) {
-        console.log("❌ Nepostojeći proizvod:", productIdNum);
-        return res.status(400).json({ error: "Nepostojeći proizvod." });
-    }
-
     try {
-        console.log("📝 Snimam narudžbu u bazu...");
-        await Order.create({ name, email,phone, productId: productIdNum, message });
-        console.log("✅ Uspješno snimljeno!");
-        res.json({ success: true });
-    } catch (error) {
-        console.error("❌ Greška pri snimanju:", error);
-        res.status(500).json({ error: "Internal server error" });
-    }
-});
+        const { name, email, phone, city, message, items, totalPrice } = req.body;
 
-// Login ruta (primer autentifikacije)
-app.post("/api/login", (req, res) => {
-    const { password } = req.body;
-    if (password === process.env.ADMIN_PASSWORD) {
-        const token = jwt.sign({ role: "admin" }, SECRET_KEY, { expiresIn: "2h" });
-        res.json({ token });
-    } else {
-        res.status(401).json({ error: "Unauthorized" });
-    }
-});
+        if (!items || !Array.isArray(items) || items.length === 0) {
+            return res.status(400).json({ error: "Korpa je prazna." });
+        }
 
-// Ruta za dohvatanje svih narudžbi (za admina)
-app.get("/api/admin/orders", async (req, res) => {
-    const auth = req.headers.authorization;
-    if (!auth) return res.status(401).json({ error: "No token" });
-
-    const token = auth.split(" ")[1];
-    try {
-        jwt.verify(token, SECRET_KEY);
-
-        const orders = await Order.find();
-
-        const ordersWithProductNames = orders.map(order => {
-            const product = products.find(p => p.id === order.productId);
-            return {
-                ...order._doc,
-                productName: product ? product.name : "Nepoznat proizvod"
-            };
+        const order = new Order({
+            name,
+            email,
+            phone,
+            city,
+            message,
+            cart: items,
+            totalPrice,
         });
 
-        res.json(ordersWithProductNames);
-    } catch {
-        res.status(403).json({ error: "Invalid token" });
+        await order.save();
+        res.status(201).json({ message: "Narudžba uspješno spremljena." });
+    } catch (err) {
+        console.error("Greška:", err);
+        res.status(500).json({ error: "Greška na serveru." });
     }
 });
 
-// Pokreni server na portu iz env ili 5000
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// === Povezivanje na MongoDB ===
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+})
+    .then(() => {
+        console.log("Povezan na MongoDB");
+        app.listen(PORT, () => console.log(`Server radi na http://localhost:${PORT}`));
+    })
+    .catch(err => console.error("Greška pri povezivanju s bazom:", err));

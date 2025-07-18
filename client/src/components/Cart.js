@@ -1,29 +1,33 @@
-import React, { useState } from "react";
-import axios from "axios";
+import React from "react";
 
-function Cart({ selectedProduct }) {
-    const [name, setName] = useState("");
-    const [email, setEmail] = useState("");
-    const [done, setDone] = useState(false);
-
-    const submitOrder = () => {
-        axios.post("http://localhost:5000/api/orders", {
-            name, email, productId: selectedProduct
-        }).then(() => {
-            setDone(true);
-        });
-    };
-
-    if (done) return <p>Hvala na narudžbi!</p>;
-
+export default function Cart({ cart }) {
     return (
         <div>
-            <h2>Checkout</h2>
-            <input placeholder="Ime" value={name} onChange={e => setName(e.target.value)} />
-            <input placeholder="Email" value={email} onChange={e => setEmail(e.target.value)} />
-            <button onClick={submitOrder}>Pošalji</button>
+            <h2>Korpa</h2>
+            {cart.length === 0 ? (
+                <p>Korpa je prazna</p>
+            ) : (
+                <table>
+                    <thead>
+                    <tr>
+                        <th>Proizvod</th>
+                        <th>Veličina</th>
+                        <th>Količina</th>
+                        <th>Cijena</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {cart.map((item, index) => (
+                        <tr key={index}>
+                            <td>{item.name}</td>
+                            <td>{item.size}</td>
+                            <td>{item.quantity}</td>
+                            <td>{item.price * item.quantity} KM</td>
+                        </tr>
+                    ))}
+                    </tbody>
+                </table>
+            )}
         </div>
     );
 }
-
-export default Cart;

@@ -1,14 +1,18 @@
 import { useState, useEffect } from "react";
 import ProductList from "./components/ProductList";
 import OrderForm from "./components/OrderForm";
-import '../src/assets/styles.css'
-import logo from '../src/slike/logonacijaca.png'
 import Footer from "./components/Footer";
-
+import Header from "./components/Header";
+import logo from './slike/logonacijaca.png';
+import CartSidebar from "./components/CartSidebar";
+import TopBanner from "./components/TopBanner";
+import '../src/assets/styles.css'
 
 export default function App() {
 
     const [loading, setLoading] = useState(true);
+    const [cart, setCart] = useState([]);
+    const [showCart, setShowCart] = useState(false);
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -31,25 +35,22 @@ export default function App() {
             </div>
         );
     }
+
     return (
 
         <div className="app-content fade-in">
-            <div style={{ fontFamily: "Arial, sans-serif", textAlign: "center" }}>
-                <header>
-                    <h1>KMF VITEZ</h1>
-                    <h2>Green Army Vitez Fan Shop</h2>
-                    <p className="pisani-text-header">#Budi dio priče, budi VITEZ!</p>
-                </header>
-
-                <ProductList />
-
-                <section style={{ marginTop: "40px" }}>
-                    <h2>Naruči!</h2>
+            <TopBanner />
+            <Header cart={cart} showCart={showCart} setShowCart={setShowCart} />
+            {showCart && <CartSidebar cart={cart} setShowCart={setShowCart} isVisible={showCart} style={{
+                transform: showCart ? "translateX(0)" : "translateX(100%)",
+                transition: "transform 0.3s ease-in-out", }}/>}
+            <main style={{ textAlign: "center", fontFamily: "Arial, sans-serif" }}>
+                <ProductList cart={cart} setCart={setCart} />
+                <section id="order" style={{ marginTop: 40 }}>
                     <OrderForm />
                 </section>
-                <br/>
-                <Footer />
-            </div>
+            </main>
+            <Footer />
         </div>
 
     );
