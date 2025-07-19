@@ -59,6 +59,27 @@ export default function App() {
                     <OrderForm cart={cart} setCart={setCart}/>
                 </section>
             </main>
+
+            <section className="contact-section">
+                <h2 className="contact-heading">Kontaktirajte nas!</h2>
+                <div className="contact-cards">
+                    <div className="contact-card">
+                        <div className="icon phone-icon"></div>
+                        <p className="label">Telefon</p>
+                        <p className="value">+387 XX XXX XXX</p>
+                    </div>
+                    <div className="contact-card">
+                        <div className="icon email-icon"></div>
+                        <p className="label">Email</p>
+                        <p className="value">info@kmfvitez.ba</p>
+                    </div>
+                    <div className="contact-card">
+                        <div className="icon location-icon"></div>
+                        <p className="label">Lokacija</p>
+                        <p className="value">Vitez, Bosna i Hercegovina</p>
+                    </div>
+                </div>
+            </section>
             <Footer />
         </div>
 

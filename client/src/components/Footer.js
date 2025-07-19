@@ -3,7 +3,7 @@ import '../assets/styles.css'
 function Footer() {
     return(
         <footer className="footer">
-            <p>&copy; Green Army Vitez - 2025 &copy;</p>
+            <p>&copy; KMF Vitez Green Army Vitez - 2025 &copy;</p>
         </footer>
     );
 }

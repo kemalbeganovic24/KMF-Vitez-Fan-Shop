@@ -94,6 +94,11 @@ header h1{
     margin: 0 auto;
 }
 
+.korpa{
+    margin-top: 170px;
+    margin-right: 45px;
+}
+
 .grid{
     display: grid;
     grid-template-columns: repeat(3,1fr);
@@ -104,6 +109,7 @@ header h1{
     background-color: #f0f0f0;
     border-radius: 12px;
     padding: 20px;
+    margin-top: 55px;
     text-align: center;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease;
@@ -152,85 +158,108 @@ header h1{
     box-shadow: 0 0 0 2px rgba(10, 139, 70, 0.2);
 }
 .form-section {
-    background-color: rgba(119, 115, 115, 0.88);
-    width: 100vw; /* cijela širina ekrana */
-    padding: 40px 0; /* vertikalni padding */
+    background-color: #085A48;
+    padding: 40px 20px;
 }
+
 .form-container {
-    max-width: 900px;
-    margin: auto;
-    font-family: Arial, sans-serif;
+    max-width: 800px;
+    margin: 0 auto;
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.naziv-form {
+    text-align: center;
+    margin-bottom: 25px;
+    font-size: 28px;
+    color: #333;
 }
 
 .form-row {
     display: flex;
     gap: 20px;
-    flex-wrap: wrap;
     margin-bottom: 20px;
+    flex-wrap: wrap;
 }
 
 .form-row label {
     flex: 1;
     display: flex;
     flex-direction: column;
+    font-weight: 600;
+    color: #333;
 }
 
-.form-container input,
-.form-container select,
-.form-container textarea {
+input, textarea {
+    margin-top: 8px;
     padding: 10px;
-    border-radius: 10px;
-    border: 1px solid black;
-    width: 100%;
-    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    font-size: 16px;
+    resize: vertical;
 }
 
-.form-container label{
-    align-self: center;
-    justify-content: center;
+textarea {
+    min-height: 100px;
 }
-.form-container button{
-    width: 100%;
-    padding: 10px;
-    border-radius: 10px;
-    border: 1px solid black;
-    margin-bottom: 60px;
-    cursor: pointer;
-    font-weight: bold;
-    font-family: 'Dancing Script', cursive;
-    font-size: 26px;
-}
-.form-container button:hover{
-    background-color: #0a8b46;
-    transition: 0.3s ease-in-out;
-}
-.form-row label{
-    align-self: center;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+
+button[type="submit"] {
+    background-color: #085A48;
     color: white;
-    gap: 10px;
+    font-size: 20px;
+    font-weight: bold;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: 0.3s ease;
+    display: block;
+    width: 100%;
+}
+
+button[type="submit"]:hover {
+    background-color: #69f8e0;
+    color: black;
+
+}
+
+/* Alert poruke */
+.alert {
+    padding: 10px 20px;
+    margin-bottom: 20px;
+    border-radius: 8px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.alert.success {
+    background-color: #d4edda;
+    color: #155724;
+}
+
+.alert.error {
+    background-color: #f8d7da;
+    color: #721c24;
+}
+.footer {
+    background-color: #085a48;       /* tamna pozadina */
+    color: #eee;                  /* svetli tekst */
+    padding: 20px 0;              /* vertikalni padding */
+    text-align: center;           /* centriran tekst */
+    font-family: 'Arial', sans-serif;
+    font-size: 16px;
+    box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+    user-select: none;
+}
+
+.footer p {
+    margin: 0;
+    letter-spacing: 0.05em;
     font-size: 1.2rem;
     font-weight: bold;
-}
-footer{
-    font-family: Arial, Helvetica, sans-serif;
-    position: fixed;
-    height: 50px;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background-color: black ;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-    color: white;
-    font-weight: 500;
-    text-align: center;
-
-}
-.footer p{
-    font-family: Arial, Helvetica, sans-serif;
-    font-size: 15px;
 }
 
 .message {
@@ -373,6 +402,84 @@ footer{
     cursor: pointer;
     float: right;
 }
+.contact-section {
+    background-color: #f8f9fa;
+    padding: 80px 20px;
+    text-align: center;
+}
+
+.contact-heading {
+    font-size: 32px;
+    font-weight: bold;
+    font-family: Candara;
+    margin-bottom: 50px;
+    color: #222;
+}
+
+.contact-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 90px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.contact-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.icon {
+    width: 90px;
+    height: 90px;
+    margin-bottom: 12px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+/* Zamijeni sa svojim ikonama */
+
+.phone-icon {
+    background-image: url('../slike/phone.png');
+}
+
+.email-icon {
+    background-image: url('../slike/email.png');
+}
+
+.location-icon {
+    background-image: url('../slike/location.png');
+}
+
+.label {
+    font-family: Candara;
+    font-size: 24px;
+    font-weight: bold;
+    margin-bottom: 4px;
+}
+
+.value {
+    font-size: 20px;
+    color: #666;
+}
+
+/* Responsive */
+@media (min-width: 768px) {
+    .contact-cards {
+        flex-direction: row;
+        justify-content: center;
+    }
+}
+
+/* Footer */
+.site-footer {
+    background-color: #222;
+    color: #fff;
+    padding: 30px 20px;
+    text-align: center;
+    font-size: 14px;
+}
 
 @media (max-width: 768px) {
     .grid {
@@ -427,5 +534,21 @@ footer{
             transform: scale(1.05);
             opacity: 0.8;
         }
+    }
+    .form-row {
+        flex-direction: column;
+    }
+
+    .naziv-form {
+        font-size: 24px;
+    }
+
+    input, textarea {
+        font-size: 15px;
+    }
+
+    button[type="submit"] {
+        font-size: 15px;
+        padding: 10px;
     }
 }
