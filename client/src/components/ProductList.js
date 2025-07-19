@@ -55,7 +55,7 @@ export default function ProductList({ cart, setCart }) {
     };
 
     return (
-        <div className="product-container">
+        <div className="product-container" id="products¸1">
             <div className="korpa"
                 style={{
                     position: "fixed",

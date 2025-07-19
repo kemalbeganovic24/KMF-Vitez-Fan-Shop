@@ -13,6 +13,7 @@ export default function App() {
     const [loading, setLoading] = useState(true);
     const [cart, setCart] = useState([]);
     const [showCart, setShowCart] = useState(false);
+    const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
         const timer = setTimeout(() => setLoading(false), 2500);
@@ -30,6 +31,11 @@ export default function App() {
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
 
+    useEffect(() => {
+        // Očisti korpu svaki put kad se stranica učita
+        setCartItems([]);
+    }, []);
+
     if (loading) {
         return (
             <div className="loading-screen">
@@ -44,6 +50,7 @@ export default function App() {
             </div>
         );
     }
+
 
     return (
 
