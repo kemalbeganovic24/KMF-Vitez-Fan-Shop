@@ -73,12 +73,12 @@ export default function App() {
                     <div className="contact-card">
                         <div className="icon phone-icon"></div>
                         <p className="label">Telefon</p>
-                        <p className="value">+387 XX XXX XXX</p>
+                        <p className="value">+387 62 890 153</p>
                     </div>
                     <div className="contact-card">
                         <div className="icon email-icon"></div>
                         <p className="label">Email</p>
-                        <p className="value">info@kmfvitez.ba</p>
+                        <p className="value">kmfvitezfanshop@gmail.com</p>
                     </div>
                     <div className="contact-card">
                         <div className="icon location-icon"></div>

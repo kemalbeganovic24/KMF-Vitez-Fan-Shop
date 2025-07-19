@@ -3,22 +3,24 @@ import logokmf from "../slike/kmflogo.png";
 import logogav from "../slike/logogav.png";
 
 export default function TopBar() {
+
     return (
         <div style={{
             display: "flex",
             alignItems: "center",
             justifyContent:"center",
             gap: "10px",
-            backgroundColor: "white",
+            backgroundColor: "#ffffff",
             padding: "10px 20px",
             borderBottom: "1px solid #ccc",
             fontFamily: "Arial, sans-serif"
-        }}><img src={logokmf} alt="logo1" style={{ height: "50px" }} />
+        }}><img src={logokmf} alt="logo1" style={{ height: "60px" }} />
             <div>
-                <h1 style={{ margin: 0, fontWeight: "bold", fontSize: "28px",alignItems:"center" }}>KMF Vitez</h1>
+                <h1 style={{ margin: 0, fontWeight: "bold", fontSize: "28px",alignItems:"center", color:"#085a48" }}>KMF Vitez</h1>
                 <p style={{ margin: "10px 0 0", fontSize: "14px" ,justifyContent:"center"}}>Green Army Vitez</p>
             </div>
-            <img src={logogav} alt="logo1" style={{ height: "60px" }} />
+            <img src={logogav} alt="logo1" style={{ height: "80px" }} />
+
         </div>
     );
 }

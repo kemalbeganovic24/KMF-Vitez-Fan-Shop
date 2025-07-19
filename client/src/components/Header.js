@@ -11,9 +11,7 @@ export default function Header({ cart, showCart, setShowCart }) {
             padding: "20px",
             textAlign: "center",
             fontFamily: "Arial, sans-serif",
-            borderBottom: "3px solid #064039"
         }}>
-
             <h2 style={{ margin: 0, fontWeight: "bold", fontSize: "28px" }}>Green Army Vitez Fan Shop</h2>
             <p style={{ margin: "10px 0 0", fontSize: "30px", padding:"20px" }} className="pisani-text-header">
                 #BudiDioPričeBudiVITEZ
@@ -27,10 +25,11 @@ export default function Header({ cart, showCart, setShowCart }) {
                     borderRadius: "5px",
                     cursor: "pointer",
                     border: "none",
+                    fontSize:"18px",
                     fontWeight: "bold"
                 }}
             >
-                Korpa ({totalItems})
+                🛒 Korpa ({totalItems})
             </button>
 
         </header>
