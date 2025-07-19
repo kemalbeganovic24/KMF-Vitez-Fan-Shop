@@ -15,11 +15,20 @@ export default function App() {
     const [showCart, setShowCart] = useState(false);
 
     useEffect(() => {
-        const timer = setTimeout(() => {
-            setLoading(false);
-        }, 2500); // 2.5 sekunde loading
+        const timer = setTimeout(() => setLoading(false), 2500);
         return () => clearTimeout(timer);
     }, []);
+
+    useEffect(() => {
+        const storedCart = localStorage.getItem("cart");
+        if (storedCart) {
+            setCart(JSON.parse(storedCart));
+        }
+    }, []);
+
+    useEffect(() => {
+        localStorage.setItem("cart", JSON.stringify(cart));
+    }, [cart]);
 
     if (loading) {
         return (
@@ -47,7 +56,7 @@ export default function App() {
             <main style={{ textAlign: "center", fontFamily: "Arial, sans-serif" }}>
                 <ProductList cart={cart} setCart={setCart} />
                 <section id="order" style={{ marginTop: 40 }}>
-                    <OrderForm />
+                    <OrderForm cart={cart} setCart={setCart}/>
                 </section>
             </main>
             <Footer />

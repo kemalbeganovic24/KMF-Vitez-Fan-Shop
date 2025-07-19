@@ -1,21 +1,24 @@
 import mongoose from "mongoose";
 
-const OrderSchema = new mongoose.Schema({
+const itemSchema = new mongoose.Schema({
+    id: Number,
+    name: String,
+    quantity: Number,
+    price: Number,
+    size: String
+}, { _id: false });  // Onemogućava _id polje
+
+const orderSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
     phone: { type: String, required: true },
     city: { type: String, required: true },
     message: { type: String },
-    cart: [
-        {
-            productId: { type: mongoose.Schema.Types.ObjectId, ref: "Product", required: true },
-            name: { type: String, required: true },
-            quantity: { type: Number, required: true },
-            price: { type: Number, required: true },
-        },
-    ],
-    totalPrice: { type: Number, required: true },
-    createdAt: { type: Date, default: Date.now },
+    items: [itemSchema],  // koristi itemSchema ovdje
+    totalPrice: Number,
+    createdAt: { type: Date, default: Date.now }
 });
 
-export default mongoose.model("Order", OrderSchema);
+const Order = mongoose.model("Order", orderSchema);
+
+export default Order;

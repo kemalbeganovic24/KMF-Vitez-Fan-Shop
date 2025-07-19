@@ -1,70 +1,69 @@
 import express from "express";
-import mongoose from "mongoose";
 import cors from "cors";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
+import Order from "./models/Order.js"; // Model ćemo poslije definirati
 
 dotenv.config();
 
 const app = express();
-const PORT = process.env.PORT || 5000;
 
-app.use(cors());
+app.use(cors({
+    origin: [
+        "http://localhost:3000",
+        "https://kmf-vitez-fan-shop.onrender.com",
+        "https://green-army-vitez-fan-shop.onrender.com"
+    ],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+}));
+
 app.use(express.json());
 
-// === Mongoose model direktno ovdje ===
-const orderSchema = new mongoose.Schema({
-    name: String,
-    email: String,
-    phone: String,
-    city: String,
-    message: String,
-    cart: [
-        {
-            productId: Number,
-            name: String,
-            quantity: Number,
-            price: Number,
-        },
-    ],
-    totalPrice: Number,
-}, { timestamps: true });
+// Povezivanje na MongoDB
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => console.log("✅ Spojeno na MongoDB Atlas"))
+    .catch(err => console.error("❌ Greška pri spajanju:", err));
 
-const Order = mongoose.model("Order", orderSchema);
+// Fiksni proizvodi (za GET /api/products)
+const products = [
+    { id: 1, name: "Majica", price: 20 },
+    { id: 2, name: "Šal", price: 15 },
+    { id: 3, name: "Dukserica", price: 40 },
+];
 
-// === RUTA bez foldera ===
+// Ruta za test (da znaš da server radi)
+app.get("/", (req, res) => {
+    res.send("🚀 Fan Shop backend je aktivan!");
+});
+
+// Vraća listu proizvoda
+app.get("/api/products", (req, res) => {
+    res.json(products);
+});
+
+// Ruta za primanje narudžbi
 app.post("/api/orders", async (req, res) => {
+    const { name, email, phone, city, message, items, totalPrice } = req.body;
+
+    if (!name || !email || !phone || !city || !items || items.length === 0) {
+        return res.status(400).json({ error: "Sva polja su obavezna i narudžba mora sadržavati proizvode." });
+    }
+
+    // 👇 Dodaj ovo da vidiš koji podaci dolaze
+    console.log("📦 PRIMLJENA NARUDŽBA:", req.body);
+
     try {
-        const { name, email, phone, city, message, items, totalPrice } = req.body;
-
-        if (!items || !Array.isArray(items) || items.length === 0) {
-            return res.status(400).json({ error: "Korpa je prazna." });
-        }
-
-        const order = new Order({
-            name,
-            email,
-            phone,
-            city,
-            message,
-            cart: items,
-            totalPrice,
-        });
-
+        const order = new Order({ name, email, phone, city, message, items, totalPrice });
         await order.save();
-        res.status(201).json({ message: "Narudžba uspješno spremljena." });
-    } catch (err) {
-        console.error("Greška:", err);
-        res.status(500).json({ error: "Greška na serveru." });
+        res.json({ success: true });
+    } catch (error) {
+        console.error("❌ Greška prilikom snimanja narudžbe:", error);
+        res.status(500).json({ error: "Greška pri snimanju narudžbe." });
     }
 });
 
-// === Povezivanje na MongoDB ===
-mongoose.connect(process.env.MONGO_URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-})
-    .then(() => {
-        console.log("Povezan na MongoDB");
-        app.listen(PORT, () => console.log(`Server radi na http://localhost:${PORT}`));
-    })
-    .catch(err => console.error("Greška pri povezivanju s bazom:", err));
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => {
+    console.log(`Server radi na portu ${PORT}`);
+});
