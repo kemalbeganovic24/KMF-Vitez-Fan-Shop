@@ -2,7 +2,8 @@ import React, { useEffect, useState } from "react";
 import majica from "../slike/majica.png";
 import shal from "../slike/shal.png";
 import duks from "../slike/duks.png";
-import slika from "../slike/pozadina2.jpg";
+
+
 
 export default function ProductList({ cart, setCart }) {
     const [selectedSizes, setSelectedSizes] = useState({});
@@ -12,6 +13,8 @@ export default function ProductList({ cart, setCart }) {
         { id: 2, name: "Šal Green Army Vitez", price: 15, image: shal },
         { id: 3, name: "Duks Green Army Vitez", price: 40, image: duks },
     ];
+
+
 
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
@@ -56,6 +59,7 @@ export default function ProductList({ cart, setCart }) {
 
     return (
         <div className="product-container" id="products1">
+
             <div className="korpa"
                 style={{
                     position: "fixed",
@@ -79,21 +83,8 @@ export default function ProductList({ cart, setCart }) {
                     </strong>
                 </p>
             </div>
-            <img
-                src={slika}
-                alt="pozadina"
-                style={{
-                    position: "absolute",
-                    top: 0,
-                    left: 0,
-                    width: "100%",
-                    height: "100%",
-                    objectFit: "cover",
-                    opacity: 0.2,
-                    zIndex: 0,
-                    pointerEvents: "none",
-                }}
-            />
+
+
             <div className="grid">
                 {products.map((product) => (
                     <div
@@ -138,6 +129,7 @@ export default function ProductList({ cart, setCart }) {
                         >
                             Dodaj u korpu
                         </button>
+
                     </div>
                 ))}
             </div>

@@ -1,6 +1,7 @@
 import React from "react";
 import logokmf from "../slike/kmflogo.png";
 import logogav from "../slike/logogav.png";
+import slika from "../slike/pozadina3.jpg";
 
 export default function TopBar() {
 
@@ -8,12 +9,17 @@ export default function TopBar() {
         <div style={{
             display: "flex",
             alignItems: "center",
-            justifyContent:"center",
+            justifyContent: "center",
             gap: "10px",
-            backgroundColor: "#ffffff",
             padding: "10px 20px",
             borderBottom: "1px solid #ccc",
-            fontFamily: "Arial, sans-serif"
+            fontFamily: "Arial, sans-serif",
+            backgroundImage: `url(${slika})`,
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+
+
         }}><img src={logokmf} alt="logo1" style={{ height: "60px" }} />
             <div>
                 <h1 style={{ margin: 0, fontWeight: "bold", fontSize: "28px",alignItems:"center", color:"#085a48" }}>KMF Vitez</h1>

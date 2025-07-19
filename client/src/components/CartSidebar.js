@@ -1,10 +1,14 @@
-// components/CartSidebar.js
 import React from 'react';
 import {isVisible} from "@testing-library/user-event/dist/utils";
 
-export default function CartSidebar({ cart, setShowCart }) {
+export default function CartSidebar({ cart,setCart, setShowCart }) {
     const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
     const totalPrice = cart.reduce((sum, item) => sum + item.quantity * item.price, 0);
+
+    const clearCart = () => {
+        setCart([]);
+        localStorage.removeItem("cart");
+    };
 
     return (
         <div className={`cart-sidebar ${isVisible ? "visible" : ""}`}>
@@ -30,6 +34,11 @@ export default function CartSidebar({ cart, setShowCart }) {
                         orderSection.scrollIntoView({ behavior: "smooth" });
                     }}}>
                 Potvrdite narudžbu!
+            </button>
+            <button
+                onClick={clearCart}
+                className="button-cartsidebar-obrisi">
+                Obriši korpu
             </button>
         </div>
     );

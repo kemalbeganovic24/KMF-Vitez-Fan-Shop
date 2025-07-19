@@ -1,7 +1,6 @@
 import React from "react";
 
 export default function Header({ cart, showCart, setShowCart }) {
-    // Ukupan broj artikala u korpi
     const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
 
     return (

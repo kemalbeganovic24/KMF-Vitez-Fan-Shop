@@ -32,7 +32,6 @@ export default function App() {
     }, [cart]);
 
     useEffect(() => {
-        // Očisti korpu svaki put kad se stranica učita
         setCartItems([]);
     }, []);
 
@@ -57,7 +56,7 @@ export default function App() {
         <div className="app-content fade-in">
             <TopBanner />
             <Header cart={cart} showCart={showCart} setShowCart={setShowCart} />
-            {showCart && <CartSidebar cart={cart} setShowCart={setShowCart} isVisible={showCart} style={{
+            {showCart && <CartSidebar cart={cart} setCart={setCart} setShowCart={setShowCart} isVisible={showCart} style={{
                 transform: showCart ? "translateX(0)" : "translateX(100%)",
                 transition: "transform 0.3s ease-in-out", }}/>}
             <main style={{ textAlign: "center", fontFamily: "Arial, sans-serif" }}>
@@ -87,6 +86,8 @@ export default function App() {
                     </div>
                 </div>
             </section>
+
+
             <Footer />
         </div>
 

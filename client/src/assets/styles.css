@@ -40,7 +40,6 @@ body{
     animation: pulse 2s infinite ease-in-out;
 }
 
-/* Animacija pulsiranja loga */
 @keyframes pulse {
     0%, 100% {
         transform: scale(1);
@@ -92,6 +91,7 @@ header h1{
     padding: 40px;
     max-width: 800px;
     margin: 0 auto;
+
 }
 
 .korpa{
@@ -146,9 +146,9 @@ header h1{
     width: 100%;
     max-width: 300px;
 
-    appearance: none;            /* remove default arrow */
-    -webkit-appearance: none;    /* Safari */
-    -moz-appearance: none;       /* Firefox */
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
 
     background-image: url("data:image/svg+xml;utf8,<svg fill='gray' height='16' viewBox='0 0 24 24' width='16' xmlns='http://www.w3.org/2000/svg'><path d='M7 10l5 5 5-5z'/></svg>");
     background-repeat: no-repeat;
@@ -232,7 +232,6 @@ button[type="submit"]:hover {
 
 }
 
-/* Alert poruke */
 .alert {
     padding: 10px 20px;
     margin-bottom: 20px;
@@ -251,10 +250,10 @@ button[type="submit"]:hover {
     color: #721c24;
 }
 .footer {
-    background-color: #085a48;       /* tamna pozadina */
-    color: #eee;                  /* svetli tekst */
-    padding: 20px 0;              /* vertikalni padding */
-    text-align: center;           /* centriran tekst */
+    background-color: #085a48;
+    color: #eee;
+    padding: 20px 0;
+    text-align: center;
     font-family: 'Arial', sans-serif;
     font-size: 16px;
     box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
@@ -396,6 +395,25 @@ button[type="submit"]:hover {
     transition: 0.3s ease-in-out;
 }
 
+.button-cartsidebar-obrisi{
+    border-radius: 10px;
+    padding: 20px;
+    background-color: #ff0000;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: bold;
+    margin-left: 90px;
+    margin-top: 15px;
+    color: white;
+}
+
+.button-cartsidebar-obrisi:hover{
+    background-color: #980000;
+    color: white;
+    transition: 0.3s ease-in-out;
+}
+
 .cart-sidebar li{
     font-size: 1rem;
     font-family:'Poppins', sans-serif ;
@@ -444,7 +462,6 @@ button[type="submit"]:hover {
     background-repeat: no-repeat;
 }
 
-/* Zamijeni sa svojim ikonama */
 
 .phone-icon {
     background-image: url('../slike/phone.png');
@@ -471,6 +488,7 @@ button[type="submit"]:hover {
 }
 
 /* Responsive */
+
 @media (min-width: 768px) {
     .contact-cards {
         flex-direction: row;
@@ -478,7 +496,6 @@ button[type="submit"]:hover {
     }
 }
 
-/* Footer */
 .site-footer {
     background-color: #222;
     color: #fff;
@@ -490,7 +507,7 @@ button[type="submit"]:hover {
 @media (max-width: 768px) {
     .grid {
         display: grid;
-        grid-template-columns: 1fr; /* Na malim ekranima 1 kolona */
+        grid-template-columns: 1fr;
         gap: 20px;
         justify-content: center;
         padding: 40px;
@@ -499,10 +516,10 @@ button[type="submit"]:hover {
         position: fixed;
         top: 0;
         left: 0;
-        width: 100vw;              /* Puna širina ekrana */
-        height: 100vh;             /* Puna visina ekrana */
+        width: 100vw;
+        height: 100vh;
         background-image: url("../slike/gav0 - kopija.jpg");
-        background-size: cover;    /* Da popuni pozadinu */
+        background-size: cover;    
         background-position: center;
         display: flex;
         flex-direction: column;
@@ -559,7 +576,11 @@ button[type="submit"]:hover {
     }
 
     .korpa{
-        margin-right: 90px;
-        margin-bottom: 130px;
+        margin-right: 120px;
+        margin-top: 133px;
+    }
+    .pozadina{
+        width: 250px;
+        height: 100px;
     }
 }
