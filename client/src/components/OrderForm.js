@@ -131,6 +131,7 @@ export default function OrderForm({ cart, setCart }) {
                     </div>
 
                     <button type="submit">Pošalji</button>
+                    <p className="molba">Molimo vas da pričekate 30 do 60 sekundi nakon što pritisnete dugme "Pošalji". Narudžba se obrađuje i biće automatski poslana u sistem. Ne zatvarajte prozor niti ponovno klikajte dok ne dobijete potvrdu.</p>
                 </form>
             </div>
         </section>

@@ -487,6 +487,12 @@ button[type="submit"]:hover {
     color: #666;
 }
 
+.molba{
+    color: #a1a1a1;
+    text-align: center;
+    font-style: italic;
+}
+
 /* Responsive */
 
 @media (min-width: 768px) {
