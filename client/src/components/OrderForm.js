@@ -38,7 +38,7 @@ export default function OrderForm({ cart, setCart }) {
                 size: item.size,
             }));
 
-            await axios.post(`${process.env.REACT_APP_API_URL}/api/orders`, {
+            await axios.post("http://localhost:5000/orders", {
                 items: cleanedItems,
                 totalPrice: total,
                 ...form,
