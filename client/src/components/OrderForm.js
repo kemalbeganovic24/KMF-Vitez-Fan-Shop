@@ -10,7 +10,8 @@ export default function OrderForm({ cart, clearCart }) {
         message: "",
     });
 
-    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
+    const handleChange = (e) =>
+        setForm({ ...form, [e.target.name]: e.target.value });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -23,8 +24,10 @@ export default function OrderForm({ cart, clearCart }) {
             price: i.price,
         }));
 
+        const API_URL = process.env.REACT_APP_API_URL;
+
         try {
-            await axios.post("/orders", {
+            await axios.post(`${API_URL}/orders`, {
                 ...form,
                 items,
                 totalPrice: items.reduce((s, i) => s + i.price * i.quantity, 0),
@@ -41,11 +44,41 @@ export default function OrderForm({ cart, clearCart }) {
     return (
         <form className="order-form" onSubmit={handleSubmit}>
             <h2>Naručite</h2>
-            <input name="name" placeholder="Ime i prezime" value={form.name} onChange={handleChange} required />
-            <input name="email" type="email" placeholder="Molimo unesite svoj Gmail e-mail" value={form.email} onChange={handleChange} required />
-            <input name="phone" placeholder="Telefon" value={form.phone} onChange={handleChange} required />
-            <input name="city" placeholder="Adresa" value={form.city} onChange={handleChange} required />
-            <textarea name="message" placeholder="Poruka (Ukoliko želite svoje ime, prezime ili broj na Vašem dresu, molimo Vas da napišete!)" value={form.message} onChange={handleChange}></textarea>
+            <input
+                name="name"
+                placeholder="Ime i prezime"
+                value={form.name}
+                onChange={handleChange}
+                required
+            />
+            <input
+                name="email"
+                type="email"
+                placeholder="Molimo unesite svoj Gmail e-mail"
+                value={form.email}
+                onChange={handleChange}
+                required
+            />
+            <input
+                name="phone"
+                placeholder="Telefon"
+                value={form.phone}
+                onChange={handleChange}
+                required
+            />
+            <input
+                name="city"
+                placeholder="Adresa"
+                value={form.city}
+                onChange={handleChange}
+                required
+            />
+            <textarea
+                name="message"
+                placeholder="Poruka (Ukoliko želite svoje ime, prezime ili broj na Vašem dresu, molimo Vas da napišete!)"
+                value={form.message}
+                onChange={handleChange}
+            ></textarea>
             <button type="submit">Pošalji narudžbu</button>
         </form>
     );
