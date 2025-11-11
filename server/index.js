@@ -5,7 +5,6 @@ import cors from "cors";
 import Order from "./models/Order.js";
 
 dotenv.config();
-
 const app = express();
 
 // Middleware
@@ -19,8 +18,7 @@ const allowedOrigins = [
 
 app.use(cors({
     origin: function(origin, callback){
-        // allow requests with no origin (like mobile apps, curl, postman)
-        if(!origin) return callback(null, true);
+        if(!origin) return callback(null, true); // Postman, curl itd.
         if(allowedOrigins.indexOf(origin) === -1){
             const msg = 'CORS policy: This origin is not allowed';
             return callback(new Error(msg), false);
@@ -32,6 +30,8 @@ app.use(cors({
 }));
 
 // MongoDB connection
+const PORT = process.env.PORT || 5000;
+
 mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
     .then(() => console.log("✅ MongoDB Atlas connected"))
     .catch(err => console.error("❌ MongoDB connection error:", err));
@@ -42,7 +42,7 @@ app.use((req, res, next) => {
     next();
 });
 
-// POST /orders - create new order
+// POST /orders
 app.post("/orders", async (req, res) => {
     try {
         const newOrder = new Order(req.body);
@@ -55,7 +55,7 @@ app.post("/orders", async (req, res) => {
     }
 });
 
-// GET /orders - get all orders
+// GET /orders
 app.get("/orders", async (req, res) => {
     try {
         const orders = await Order.find().sort({ createdAt: -1 });
@@ -67,10 +67,7 @@ app.get("/orders", async (req, res) => {
 });
 
 // Test route
-app.get("/", (req, res) => {
-    res.send("🚀 Server radi i spojen je na MongoDB Atlas ✅");
-});
+app.get("/", (req, res) => res.send("🚀 Server radi i spojen je na MongoDB Atlas ✅"));
 
 // Start server
-const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => console.log(`🚀 Server radi na portu ${PORT}`));

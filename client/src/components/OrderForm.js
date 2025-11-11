@@ -17,6 +17,7 @@ export default function OrderForm({ cart, clearCart }) {
         e.preventDefault();
         if (!cart.length) return alert("Korpa je prazna!");
 
+        // mapiranje artikala iz korpe
         const items = cart.map((i) => ({
             name: i.name,
             size: i.size,
@@ -24,6 +25,7 @@ export default function OrderForm({ cart, clearCart }) {
             price: i.price,
         }));
 
+        // API URL iz .env ili fallback na localhost
         const API_URL =
             process.env.REACT_APP_API_URL || "http://localhost:5000";
 
