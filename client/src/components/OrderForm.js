@@ -24,7 +24,7 @@ export default function OrderForm({ cart, clearCart }) {
         }));
 
         try {
-            await axios.post(`${process.env.REACT_APP_API_URL}/orders`, {
+            await axios.post("/orders", {
                 ...form,
                 items,
                 totalPrice: items.reduce((s, i) => s + i.price * i.quantity, 0),

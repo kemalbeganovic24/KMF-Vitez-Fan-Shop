@@ -14,21 +14,29 @@ app.use(cors({
         "http://localhost:3000",
         "https://kmf-vitez-fan-shop-1.onrender.com"
     ],
-    methods: ["GET", "POST"],
+    methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
 }));
 app.use(express.json());
 
+// Test: ispis URL-a
+console.log("🔗 Connecting to MongoDB with URL:", process.env.MONGO_URL);
+
 // MongoDB Atlas konekcija
-mongoose.connect(process.env.MONGO_URL)
+mongoose.connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+})
     .then(() => console.log("✅ MongoDB Atlas connected"))
     .catch(err => console.error("❌ MongoDB connection error:", err));
 
 // POST /orders - kreiranje narudžbe
 app.post("/orders", async (req, res) => {
+    console.log("📦 Primljena narudžba:", req.body); // log request body
     try {
         const newOrder = new Order(req.body);
-        await newOrder.save();
+        const savedOrder = await newOrder.save();
+        console.log("✅ Narudžba sačuvana:", savedOrder);
         res.status(201).json({ message: "Narudžba uspješno poslana!" });
     } catch (err) {
         console.error("❌ Greška prilikom slanja narudžbe:", err);
@@ -36,7 +44,7 @@ app.post("/orders", async (req, res) => {
     }
 });
 
-// GET /orders - dohvat svih narudžbi (opcionalno)
+// GET /orders - dohvat svih narudžbi
 app.get("/orders", async (req, res) => {
     try {
         const orders = await Order.find().sort({ createdAt: -1 });
