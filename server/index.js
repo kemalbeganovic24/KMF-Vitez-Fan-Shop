@@ -1,78 +1,76 @@
-// server/index.js
 import express from "express";
 import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
 import Order from "./models/Order.js";
 
-dotenv.config(); // MORA biti odmah na vrhu
+dotenv.config();
 
 const app = express();
 
-// Simple CORS handler (explicit)
+// Middleware
+app.use(express.json());
+
+// CORS setup
 const allowedOrigins = [
-    "http://localhost:3000",
-    "https://kmf-vitez-fan-shop-1.onrender.com"
+    "http://localhost:3000", // lokalni frontend
+    "https://kmf-vitez-fan-shop-1.onrender.com" // frontend na Render
 ];
 
+app.use(cors({
+    origin: function(origin, callback){
+        // allow requests with no origin (like mobile apps, curl, postman)
+        if(!origin) return callback(null, true);
+        if(allowedOrigins.indexOf(origin) === -1){
+            const msg = 'CORS policy: This origin is not allowed';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    },
+    methods: ["GET","POST"],
+    allowedHeaders: ["Content-Type"]
+}));
+
+// MongoDB connection
+mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true, useUnifiedTopology: true })
+    .then(() => console.log("✅ MongoDB Atlas connected"))
+    .catch(err => console.error("❌ MongoDB connection error:", err));
+
+// Logging middleware
 app.use((req, res, next) => {
-    const origin = req.headers.origin;
-    if (allowedOrigins.includes(origin)) {
-        res.setHeader("Access-Control-Allow-Origin", origin);
-    }
-    res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
-    res.setHeader("Access-Control-Allow-Headers", "Content-Type");
-    if (req.method === "OPTIONS") return res.sendStatus(204);
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
     next();
 });
 
-app.use(express.json());
-
-// --- DEBUG: ispiši MONGO_URL da vidimo što Render vidi ---
-console.log("DEBUG: process.env.MONGO_URL =", JSON.stringify(process.env.MONGO_URL));
-
-// Connect to Mongo
-const mongoUrl = process.env.MONGO_URL;
-if (!mongoUrl) {
-    console.error("FATAL: MONGO_URL nije postavljen u env varijablama!");
-} else {
-    mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true })
-        .then(() => console.log("✅ MongoDB Atlas connected"))
-        .catch(err => {
-            console.error("❌ MongoDB connection error:", err);
-        });
-}
-
-// POST /orders
+// POST /orders - create new order
 app.post("/orders", async (req, res) => {
-    console.log("📦 POST /orders payload:", req.body);
     try {
         const newOrder = new Order(req.body);
-        const saved = await newOrder.save();
-        console.log("✅ Saved order id:", saved._id);
-        return res.status(201).json({ message: "Narudžba uspješno poslana!", id: saved._id });
+        await newOrder.save();
+        console.log("✅ Order saved:", newOrder);
+        res.status(201).json({ message: "Narudžba uspješno poslana!" });
     } catch (err) {
         console.error("❌ Error saving order:", err);
-        return res.status(500).json({ message: "Greška na serveru", error: err.message });
+        res.status(500).json({ message: "Greška na serveru." });
     }
 });
 
-// GET /orders (test)
+// GET /orders - get all orders
 app.get("/orders", async (req, res) => {
     try {
-        const rows = await Order.find().sort({ createdAt: -1 }).limit(50);
-        return res.json(rows);
+        const orders = await Order.find().sort({ createdAt: -1 });
+        res.json(orders);
     } catch (err) {
         console.error("❌ Error fetching orders:", err);
-        return res.status(500).json({ message: "Greška pri dohvaćanju", error: err.message });
+        res.status(500).json({ message: "Greška na serveru." });
     }
 });
 
-// root
-app.get("/", (req, res) => res.send("🚀 Server OK"));
-
-// start
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`🚀 Server running on port ${PORT}`);
+// Test route
+app.get("/", (req, res) => {
+    res.send("🚀 Server radi i spojen je na MongoDB Atlas ✅");
 });
+
+// Start server
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server radi na portu ${PORT}`));

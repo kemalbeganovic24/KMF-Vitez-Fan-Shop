@@ -24,20 +24,24 @@ export default function OrderForm({ cart, clearCart }) {
             price: i.price,
         }));
 
-        const API_URL = process.env.REACT_APP_API_URL;
+        const API_URL =
+            process.env.REACT_APP_API_URL || "http://localhost:5000";
 
         try {
-            await axios.post(`${API_URL}/orders`, {
+            const res = await axios.post(`${API_URL}/orders`, {
                 ...form,
                 items,
                 totalPrice: items.reduce((s, i) => s + i.price * i.quantity, 0),
             });
-            alert("Narudžba poslana!");
+
+            alert(res.data.message || "Narudžba poslana!");
             clearCart();
             setForm({ name: "", email: "", phone: "", city: "", message: "" });
         } catch (err) {
-            console.error(err);
-            alert("Greška prilikom slanja narudžbe!");
+            console.error("❌ Greška prilikom slanja narudžbe:", err);
+            alert(
+                "Greška prilikom slanja narudžbe! Provjeri da li je backend online i da je MONGO_URL ispravno postavljen."
+            );
         }
     };
 
@@ -75,7 +79,7 @@ export default function OrderForm({ cart, clearCart }) {
             />
             <textarea
                 name="message"
-                placeholder="Poruka (Ukoliko želite svoje ime, prezime ili broj na Vašem dresu, molimo Vas da napišete!)"
+                placeholder="Poruka (npr. ime, prezime ili broj na dresu)"
                 value={form.message}
                 onChange={handleChange}
             ></textarea>
