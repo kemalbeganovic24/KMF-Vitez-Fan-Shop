@@ -1,96 +1,52 @@
-import { useState, useEffect } from "react";
-import ProductList from "./components/ProductList";
+import React, { useState, useEffect } from "react";
+import Header from "./components/Header";
+import ProductGrid from "./components/ProductGrid";
+import CartSidebar from "./components/CartSidebar";
 import OrderForm from "./components/OrderForm";
 import Footer from "./components/Footer";
-import Header from "./components/Header";
-import logo from './slike/logonacijaca.png';
-import CartSidebar from "./components/CartSidebar";
-import TopBanner from "./components/TopBanner";
-import '../src/assets/styles.css'
+import "./App.css";
 
 export default function App() {
-
-    const [loading, setLoading] = useState(true);
     const [cart, setCart] = useState([]);
     const [showCart, setShowCart] = useState(false);
-    const [cartItems, setCartItems] = useState([]);
 
     useEffect(() => {
-        const timer = setTimeout(() => setLoading(false), 2500);
-        return () => clearTimeout(timer);
-    }, []);
-
-    useEffect(() => {
-        const storedCart = localStorage.getItem("cart");
-        if (storedCart) {
-            setCart(JSON.parse(storedCart));
-        }
+        const stored = localStorage.getItem("cart");
+        if (stored) setCart(JSON.parse(stored));
     }, []);
 
     useEffect(() => {
         localStorage.setItem("cart", JSON.stringify(cart));
     }, [cart]);
 
-    useEffect(() => {
-        setCartItems([]);
-    }, []);
-
-    if (loading) {
-        return (
-            <div className="loading-screen">
-                <div className="loading-text">KMF VITEZ - GREEN ARMY VITEZ</div>
-                <br/>
-                <div className="loading-image">
-                    <img src={logo} alt="Logo" />
-                    <br/>
-                </div>
-                <br/>
-
-            </div>
-        );
-    }
-
+    const clearCart = () => setCart([]);
 
     return (
+        <div className="site-root">
+            <Header
+                cartCount={cart ? cart.reduce((sum, item) => sum + (item.quantity || 0), 0) : 0}
+                onCartOpen={() => setShowCart(true)}
+            />
 
-        <div className="app-content fade-in">
-            <TopBanner />
-            <Header cart={cart} showCart={showCart} setShowCart={setShowCart} />
-            {showCart && <CartSidebar cart={cart} setCart={setCart} setShowCart={setShowCart} isVisible={showCart} style={{
-                transform: showCart ? "translateX(0)" : "translateX(100%)",
-                transition: "transform 0.3s ease-in-out", }}/>}
-            <main style={{ textAlign: "center", fontFamily: "Arial, sans-serif" }}>
-                <ProductList cart={cart} setCart={setCart} />
-                <section id="order" style={{ marginTop: 40 }}>
-                    <OrderForm cart={cart} setCart={setCart}/>
+            <main className="main-container">
+                <section className="products-section">
+                    <h2 className="section-title">Dresovi 2025/26</h2>
+                    <ProductGrid cart={cart} setCart={setCart} />
                 </section>
             </main>
 
-            <section className="contact-section">
-                <h2 className="contact-heading">Kontaktirajte nas!</h2>
-                <div className="contact-cards">
-                    <div className="contact-card">
-                        <div className="icon phone-icon"></div>
-                        <p className="label">Telefon</p>
-                        <p className="value">+387 62 890 153</p>
-                    </div>
-                    <div className="contact-card">
-                        <div className="icon email-icon"></div>
-                        <p className="label">Email</p>
-                        <p className="value">kmfvitezfanshop@gmail.com</p>
-                    </div>
-                    <div className="contact-card">
-                        <div className="icon location-icon"></div>
-                        <p className="label">Lokacija</p>
-                        <p className="value">Vitez, Bosna i Hercegovina</p>
-                    </div>
-                </div>
-            </section>
+            <CartSidebar
+                cart={cart}
+                setCart={setCart}
+                isVisible={showCart}
+                setShowCart={setShowCart}
+            />
 
+            <section className="order-wrapper">
+                <OrderForm cart={cart} clearCart={clearCart} />
+            </section>
 
             <Footer />
         </div>
-
     );
-
 }

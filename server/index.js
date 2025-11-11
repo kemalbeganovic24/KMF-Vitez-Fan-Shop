@@ -1,54 +1,57 @@
 import express from "express";
+import mongoose from "mongoose";
+import dotenv from "dotenv";
 import cors from "cors";
-import sqlite3 from "sqlite3";
-import { open } from "sqlite";
+import Order from "./models/Order.js";
+
+dotenv.config();
 
 const app = express();
-app.use(cors());
+
+// Middleware
+app.use(cors({
+    origin: [
+        "http://localhost:3000", // frontend lokalno
+        "https://green-army-vitez-fan-shop.onrender.com" // frontend na Render
+    ],
+    methods: ["GET", "POST"],
+    allowedHeaders: ["Content-Type"],
+}));
 app.use(express.json());
 
-// Otvori bazu
-const dbPromise = open({
-    filename: "./fan-shop.db",
-    driver: sqlite3.Database,
-});
+// MongoDB Atlas konekcija
+mongoose.connect(process.env.MONGO_URL)
+    .then(() => console.log("✅ MongoDB Atlas connected"))
+    .catch(err => console.error("❌ MongoDB connection error:", err));
 
-// Kreiraj tabelu ako ne postoji
-dbPromise.then(async (db) => {
-    await db.exec(`
-    CREATE TABLE IF NOT EXISTS orders (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      name TEXT,
-      email TEXT,
-      city TEXT,
-      phone TEXT,
-      message TEXT,
-      items TEXT
-    )
-  `);
-});
-
-// Ruta za spremanje narudžbe
+// POST /orders - kreiranje narudžbe
 app.post("/orders", async (req, res) => {
     try {
-        const { name, email,  city, phone, message, items } = req.body;
-        const db = await dbPromise;
-        await db.run(
-            `INSERT INTO orders (name, email,  city, phone, message, items) VALUES (?, ?, ?, ?, ?, ?)`,
-            [name, email,  city, phone, message, JSON.stringify(items)]
-        );
-        res.json({ success: true });
+        const newOrder = new Order(req.body);
+        await newOrder.save();
+        res.status(201).json({ message: "Narudžba uspješno poslana!" });
     } catch (err) {
-        console.error("Greška:", err);
-        res.status(500).json({ success: false, error: "Greška prilikom spremanja" });
+        console.error("❌ Greška prilikom slanja narudžbe:", err);
+        res.status(500).json({ message: "Greška na serveru." });
     }
 });
 
-// Ruta za dohvat svih narudžbi
+// GET /orders - dohvat svih narudžbi (opcionalno)
 app.get("/orders", async (req, res) => {
-    const db = await dbPromise;
-    const orders = await db.all(`SELECT * FROM orders`);
-    res.json(orders);
+    try {
+        const orders = await Order.find().sort({ createdAt: -1 });
+        res.json(orders);
+    } catch (err) {
+        console.error("❌ Greška prilikom dohvaćanja narudžbi:", err);
+        res.status(500).json({ message: "Greška na serveru." });
+    }
 });
 
-app.listen(5000, () => console.log("Server radi na portu 5000"));
+// Test ruta
+app.get("/", (req, res) => {
+    res.send("🚀 Server radi i spojen je na MongoDB Atlas ✅");
+});
+
+// Pokretanje servera
+const PORT = process.env.PORT || 5000;
+app.listen(PORT, () => console.log(`🚀 Server radi na portu ${PORT}`));

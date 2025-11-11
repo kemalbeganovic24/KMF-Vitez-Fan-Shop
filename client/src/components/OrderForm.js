@@ -1,139 +1,52 @@
 import React, { useState } from "react";
 import axios from "axios";
 
-export default function OrderForm({ cart, setCart }) {
+export default function OrderForm({ cart, clearCart }) {
     const [form, setForm] = useState({
         name: "",
         email: "",
         phone: "",
-        message: "",
         city: "",
+        message: "",
     });
-    const [success, setSuccess] = useState(false);
-    const [error, setError] = useState(null);
 
-    const handleChange = (e) => {
-        setForm({ ...form, [e.target.name]: e.target.value });
-    };
+    const handleChange = (e) => setForm({ ...form, [e.target.name]: e.target.value });
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        if (!cart.length) return alert("Korpa je prazna!");
 
-        if (cart.length === 0) {
-            alert("Korpa je prazna.");
-            return;
-        }
+        const items = cart.map((i) => ({
+            name: i.name,
+            size: i.size,
+            quantity: i.quantity,
+            price: i.price,
+        }));
 
         try {
-            const total = cart.reduce(
-                (sum, item) => sum + item.price * item.quantity,
-                0
-            );
-
-            const cleanedItems = cart.map((item) => ({
-                _id: item._id,
-                name: item.name,
-                price: item.price,
-                quantity: item.quantity,
-                size: item.size,
-            }));
-
             await axios.post("http://localhost:5000/orders", {
-                items: cleanedItems,
-                totalPrice: total,
                 ...form,
+                items,
+                totalPrice: items.reduce((s, i) => s + i.price * i.quantity, 0),
             });
-
-            alert("Narudžba uspješno poslana!");
-            setCart([]);
-            setForm({ name: "", email: "", phone: "", message: "", city: "" });
-            localStorage.removeItem("cart");
-            setSuccess(true);
-            setError(null);
-            setTimeout(() => setSuccess(false), 8000);
+            alert("Narudžba poslana!");
+            clearCart();
+            setForm({ name: "", email: "", phone: "", city: "", message: "" });
         } catch (err) {
-            console.error("Greška prilikom slanja narudžbe:", err);
-            setError("Došlo je do greške prilikom slanja narudžbe.");
+            console.error(err);
+            alert("Greška prilikom slanja narudžbe!");
         }
     };
 
     return (
-        <section className="form-section" id="order">
-            <div className="form-container">
-                {success && <div className="alert success">Uspješno ste naručili!</div>}
-                {error && <div className="alert error">{error}</div>}
-                <h1 className="naziv-form">Naručite</h1>
-                <form
-                    onSubmit={handleSubmit}
-                    style={{ textAlign: "left", marginTop: "10px" }}
-                >
-                    <div className="form-row">
-                        <label>
-                            Ime i prezime:
-                            <input
-                                type="text"
-                                name="name"
-                                value={form.name}
-                                onChange={handleChange}
-                                required
-                            />
-                        </label>
-
-                        <label>
-                            Email:
-                            <input
-                                type="email"
-                                name="email"
-                                value={form.email}
-                                onChange={handleChange}
-                                required
-                            />
-                        </label>
-                    </div>
-
-                    <div className="form-row">
-                        <label>
-                            Broj telefona:
-                            <input
-                                type="tel"
-                                name="phone"
-                                value={form.phone}
-                                onChange={handleChange}
-                                placeholder="+387 61 123 456"
-                                required
-                            />
-                        </label>
-
-                        <label>
-                            Grad:
-                            <input
-                                type="text"
-                                name="city"
-                                placeholder={"Grad i adresa stanovanja"}
-                                value={form.city}
-                                onChange={handleChange}
-                                required
-                            />
-                        </label>
-                    </div>
-
-                    <div className="form-row">
-                        <label style={{ width: "100%" }}>
-                            Poruka/Napomena:
-                            <textarea
-                                name="message"
-                                value={form.message}
-                                onChange={handleChange}
-                                placeholder="Unesite poruku ili napomenu"
-                                required
-                            />
-                        </label>
-                    </div>
-
-                    <button type="submit">Pošalji</button>
-                    <p className="molba">Molimo vas da pričekate 30 do 60 sekundi nakon što pritisnete dugme "Pošalji". Narudžba se obrađuje i biće automatski poslana u sistem. Ne zatvarajte prozor niti ponovno klikajte dok ne dobijete potvrdu.</p>
-                </form>
-            </div>
-        </section>
+        <form className="order-form" onSubmit={handleSubmit}>
+            <h2>Naručite</h2>
+            <input name="name" placeholder="Ime i prezime" value={form.name} onChange={handleChange} required />
+            <input name="email" type="email" placeholder="Molimo unesite svoj Gmail e-mail" value={form.email} onChange={handleChange} required />
+            <input name="phone" placeholder="Telefon" value={form.phone} onChange={handleChange} required />
+            <input name="city" placeholder="Adresa" value={form.city} onChange={handleChange} required />
+            <textarea name="message" placeholder="Poruka (Ukoliko želite svoje ime, prezime ili broj na Vašem dresu, molimo Vas da napišete!)" value={form.message} onChange={handleChange}></textarea>
+            <button type="submit">Pošalji narudžbu</button>
+        </form>
     );
 }

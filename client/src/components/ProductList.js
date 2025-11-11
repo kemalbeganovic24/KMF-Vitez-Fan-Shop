@@ -1,121 +1,91 @@
-import React, { useEffect, useState } from "react";
-import majica from "../slike/majica.png";
-import shal from "../slike/shal.png";
-import duks from "../slike/duks.png";
-
-
+import React, { useState } from "react";
+import dresFront from "../slike/dres-front.jpeg";
+import dresBack from "../slike/dres-back.jpeg";
 
 export default function ProductList({ cart, setCart }) {
     const [selectedSizes, setSelectedSizes] = useState({});
+    const [selectedVariants, setSelectedVariants] = useState({});
+    const [customTextSelections, setCustomTextSelections] = useState({});
+    const [hoveredProduct, setHoveredProduct] = useState(null);
 
     const products = [
-        { id: 1, name: "Majica Green Army Vitez", price: 25, image: majica },
-        { id: 2, name: "Šal Green Army Vitez", price: 15, image: shal },
-        { id: 3, name: "Duks Green Army Vitez", price: 40, image: duks },
+        {
+            id: 1,
+            name: "Dres 2025/26",
+            basePrice: 50,
+            front: dresFront,
+            back: dresBack,
+        },
     ];
 
-
-
-    useEffect(() => {
-        localStorage.setItem("cart", JSON.stringify(cart));
-    }, [cart]);
-
-    const handleSizeChange = (productId, size) => {
-        setSelectedSizes((prev) => ({
-            ...prev,
-            [productId]: size,
-        }));
-    };
-
     const handleAddToCart = (product) => {
-        const selectedSize = selectedSizes[product.id];
-        if (!selectedSize) {
-            alert("Molimo odaberite veličinu.");
+        const size = selectedSizes[product.id];
+        const variant = selectedVariants[product.id];
+        const customText = customTextSelections[product.id] || false;
+
+        if (!size || !variant) {
+            alert("Molimo odaberite veličinu i varijantu.");
             return;
         }
 
+        const variantPrice = variant === "away" ? product.basePrice + 5 : product.basePrice;
+        const textPrice = customText ? 10 : 0;
+        const finalPrice = variantPrice + textPrice;
+
         const existing = cart.find(
-            (item) => item.id === product.id && item.size === selectedSize
+            (i) => i.id === product.id && i.size === size && i.variant === variant && i.customText === customText
         );
 
         if (existing) {
             setCart(
-                cart.map((item) =>
-                    item.id === product.id && item.size === selectedSize
-                        ? { ...item, quantity: item.quantity + 1 }
-                        : item
+                cart.map((i) =>
+                    i.id === product.id && i.size === size && i.variant === variant && i.customText === customText
+                        ? { ...i, quantity: i.quantity + 1 }
+                        : i
                 )
             );
         } else {
-            setCart([...cart, {
-                id: product.id,
-                name: product.name,
-                price: product.price,
-                size: selectedSize,
-                quantity: 1
-            }]);
+            setCart([
+                ...cart,
+                { id: product.id, name: product.name, size, variant, customText, price: finalPrice, quantity: 1 },
+            ]);
         }
     };
 
     return (
-        <div className="product-container" id="products1">
-
-            <div className="korpa"
-                style={{
-                    position: "fixed",
-                    top: "175px",
-                    right: "10px",
-                    background: "#ffffff",
-                    padding: "10px 15px",
-                    borderRadius: "10px",
-                    boxShadow: "0 0 10px rgba(0,0,0,0.2)",
-                    zIndex: 10,
-                }}
-            >
-                <p>
-                    🛒 Artikala u korpi:{" "}
-                    <strong>{cart.reduce((acc, item) => acc + item.quantity, 0)}</strong>
-                </p>
-                <p>
-                    Ukupna cijena:{" "}
-                    <strong>
-                        {cart.reduce((acc, item) => acc + item.price * item.quantity, 0)} KM
-                    </strong>
-                </p>
-            </div>
-
-
-            <div className="grid">
-                {products.map((product) => (
-                    <div
-                        key={product.id}
-                        className="grid-kartice"
-                        style={{
-                            border: "1px solid #ccc",
-                            borderRadius: "10px",
-                            padding: "10px",
-                            width: "200px",
-                            textAlign: "center",
-                            boxShadow: "0 0 8px rgba(0,0,0,0.1)",
-                        }}
-                    >
+        <div className="products-grid">
+            {products.map((product) => (
+                <div
+                    key={product.id}
+                    className="product-card"
+                    onMouseEnter={() => setHoveredProduct(product.id)}
+                    onMouseLeave={() => setHoveredProduct(null)}
+                >
+                    <div className="image-wrapper">
                         <img
-                            src={product.image}
+                            src={hoveredProduct === product.id ? product.back : product.front}
                             alt={product.name}
-                            style={{
-                                width: "100%",
-                                height: "180px",
-                                objectFit: "contain",
-                                borderRadius: "8px",
-                                marginBottom: "10px",
-                            }}
+                            className="product-image"
                         />
-                        <h3>{product.name}</h3>
-                        <p>{product.price}KM</p>
+                    </div>
+                    <h3>{product.name}</h3>
+                    <p>Cijena: {product.basePrice} KM</p>
+
+                    <div className="product-options">
+                        <select
+                            value={selectedVariants[product.id] || ""}
+                            onChange={(e) =>
+                                setSelectedVariants({ ...selectedVariants, [product.id]: e.target.value })
+                            }
+                        >
+                            <option value="">Odaberi varijantu</option>
+                            <option value="home">Domaći</option>
+                            <option value="away">Gostujući (+5 KM)</option>
+                        </select>
+
                         <select
                             value={selectedSizes[product.id] || ""}
-                            onChange={(e) => handleSizeChange(product.id, e.target.value)}
-                            className="select-size"
+                            onChange={(e) => setSelectedSizes({ ...selectedSizes, [product.id]: e.target.value })}
                         >
                             <option value="">Odaberi veličinu</option>
                             <option value="S">S</option>
@@ -123,16 +93,22 @@ export default function ProductList({ cart, setCart }) {
                             <option value="L">L</option>
                             <option value="XL">XL</option>
                         </select>
-                        <button
-                            className="add-to-cart"
-                            onClick={() => handleAddToCart(product)}
-                        >
-                            Dodaj u korpu
-                        </button>
 
+                        <label>
+                            <input
+                                type="checkbox"
+                                checked={customTextSelections[product.id] || false}
+                                onChange={(e) =>
+                                    setCustomTextSelections({ ...customTextSelections, [product.id]: e.target.checked })
+                                }
+                            />
+                            Sa natpisom (+10 KM)
+                        </label>
                     </div>
-                ))}
-            </div>
+
+                    <button onClick={() => handleAddToCart(product)}>Dodaj u korpu</button>
+                </div>
+            ))}
         </div>
     );
 }
