@@ -14,7 +14,7 @@ app.use(express.json());
 // CORS setup
 const allowedOrigins = [
     "http://localhost:3000", // lokalni frontend
-    "https://kmf-vitez-fan-shop-1.onrender.com" // frontend na Render
+    "https://kmf-vitez-fan-shop.onrender.com" // frontend na Render
 ];
 
 app.use(cors({
