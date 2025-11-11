@@ -22,7 +22,7 @@ export default function OrderForm({ cart, clearCart }) {
             quantity: i.quantity,
             price: i.price,
         }));
-        
+
         try {
             await axios.post(`${process.env.REACT_APP_API_URL}/orders`, {
                 ...form,
