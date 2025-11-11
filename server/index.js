@@ -12,7 +12,7 @@ const app = express();
 app.use(cors({
     origin: [
         "http://localhost:3000", // frontend lokalno
-        "https://green-army-vitez-fan-shop.onrender.com" // frontend na Render
+        "https://https://kmf-vitez-fan-shop-1.onrender.com" // frontend na Render
     ],
     methods: ["GET", "POST"],
     allowedHeaders: ["Content-Type"],
